@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cleanest Hour</title>
+<meta name="description" content="Pick your U.S. grid and appliance; see the start time with the lowest typical carbon intensity, and how many kg CO2e that saves per run and per year. Built from 12 months of EIA-930 hourly data and EPA eGRID emission factors.">
+<meta name="theme-color" content="#0f6b46">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#result">Skip to result</a>
+<header class="top">
+  <div class="wrap top-inner">
+    <div class="brand">
+      <img src="icon.svg" alt="" width="32" height="32">
+      <div>
+        <h1>Cleanest Hour</h1>
+        <p class="tagline">When should I run it? Shift flexible electricity use to the hours your grid burns the least fossil fuel.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap layout">
+  <form id="controls" class="panel controls" aria-label="Your situation" onsubmit="return false">
+    <h2 class="panel-title">Your situation</h2>
+
+    <div class="field">
+      <label for="region">Your grid region</label>
+      <select id="region" name="region"></select>
+      <p class="hint" id="region-area"></p>
+      <details class="finder">
+        <summary>Not sure? Find it by state</summary>
+        <label for="state" class="sr-only">State</label>
+        <select id="state"><option value="">Choose a state…</option></select>
+        <div id="state-out" class="state-out" aria-live="polite"></div>
+      </details>
+    </div>
+
+    <fieldset class="field">
+      <legend>Appliance</legend>
+      <div class="chips" id="appliances" role="radiogroup" aria-label="Appliance"></div>
+      <p class="hint" id="appliance-source"></p>
+    </fieldset>
+
+    <div class="row2">
+      <div class="field">
+        <label for="kwh">Energy per run <span class="unit">kWh</span></label>
+        <input id="kwh" type="number" min="0.1" max="100" step="0.1" inputmode="decimal" required>
+      </div>
+      <div class="field">
+        <label for="hours">Run length <span class="unit">hours</span></label>
+        <input id="hours" type="number" min="0.5" max="12" step="0.5" inputmode="decimal" required>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="runs">Runs per week</label>
+        <input id="runs" type="number" min="1" max="14" step="1" inputmode="numeric" required>
+      </div>
+      <div class="field">
+        <label for="usual">Usual start time</label>
+        <select id="usual"></select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="window">When can it run?</label>
+      <select id="window">
+        <option value="any">Any time</option>
+        <option value="22-7">Overnight (10 pm – 7 am)</option>
+        <option value="8-17">While I'm out (8 am – 5 pm)</option>
+        <option value="17-23">Evening (5 pm – 11 pm)</option>
+        <option value="custom">Custom…</option>
+      </select>
+      <div class="row2 custom-window" id="custom-window" hidden>
+        <div class="field">
+          <label for="win-from">Start after</label>
+          <select id="win-from"></select>
+        </div>
+        <div class="field">
+          <label for="win-until">Finish by</label>
+          <select id="win-until"></select>
+        </div>
+      </div>
+    </div>
+
+    <fieldset class="field">
+      <legend>Season</legend>
+      <div class="seg" id="season">
+        <label><input type="radio" name="season" value="all" checked><span>All year</span></label>
+        <label><input type="radio" name="season" value="winter"><span>Winter</span></label>
+        <label><input type="radio" name="season" value="spring"><span>Spring</span></label>
+        <label><input type="radio" name="season" value="summer"><span>Summer</span></label>
+        <label><input type="radio" name="season" value="fall"><span>Fall</span></label>
+      </div>
+    </fieldset>
+    <fieldset class="field">
+      <legend>Days</legend>
+      <div class="seg" id="daytype">
+        <label><input type="radio" name="daytype" value="all" checked><span>Every day</span></label>
+        <label><input type="radio" name="daytype" value="weekday"><span>Weekdays</span></label>
+        <label><input type="radio" name="daytype" value="weekend"><span>Weekends</span></label>
+      </div>
+    </fieldset>
+  </form>
+
+  <div class="results">
+    <section id="result" class="panel hero" aria-live="polite" aria-atomic="true" tabindex="-1">
+      <p class="eyebrow" id="hero-eyebrow">Loading grid data…</p>
+      <p class="hero-time" id="hero-time">–</p>
+      <p class="hero-sub" id="hero-sub"></p>
+      <div class="tiles">
+        <div class="tile">
+          <p class="tile-label">Per run</p>
+          <p class="tile-value" id="t-run">–</p>
+          <p class="tile-note" id="t-run-note"></p>
+        </div>
+        <div class="tile">
+          <p class="tile-label">Per year</p>
+          <p class="tile-value" id="t-year">–</p>
+          <p class="tile-note" id="t-year-note"></p>
+        </div>
+        <div class="tile">
+          <p class="tile-label">Track record</p>
+          <p class="tile-value" id="t-track">–</p>
+          <p class="tile-note" id="t-track-note"></p>
+        </div>
+      </div>
+      <p class="summary" id="summary"></p>
+      <div class="actions">
+        <button type="button" id="ics" class="btn primary">Add weekly reminder (.ics)</button>
+        <button type="button" id="share" class="btn">Copy link to this plan</button>
+        <span id="share-status" class="status" role="status"></span>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="chart-title">
+      <div class="panel-head">
+        <h2 class="panel-title" id="chart-title">Average carbon intensity by hour</h2>
+        <button type="button" class="link-btn" id="toggle-table" aria-expanded="false" aria-controls="hour-table-wrap">Show as table</button>
+      </div>
+      <p class="hint" id="chart-sub"></p>
+      <div class="legend" aria-hidden="true">
+        <span><i class="key key-best"></i>Recommended run</span>
+        <span><i class="key key-usual"></i>Your usual run</span>
+        <span><i class="key key-other"></i>Other hours</span>
+        <span><i class="key key-range"></i>Middle 80% of days</span>
+      </div>
+      <div class="chart" id="chart"></div>
+      <div id="hour-table-wrap" hidden>
+        <table class="data" id="hour-table"></table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="mix-title">
+      <div class="panel-head">
+        <h2 class="panel-title" id="mix-title">Why: what generates the power each hour</h2>
+        <button type="button" class="link-btn" id="toggle-mix-table" aria-expanded="false" aria-controls="mix-table-wrap">Show as table</button>
+      </div>
+      <p class="hint" id="mix-sub"></p>
+      <div class="legend" id="mix-legend" aria-hidden="true"></div>
+      <div class="chart" id="mix-chart"></div>
+      <div id="mix-table-wrap" hidden>
+        <table class="data" id="mix-table"></table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="plan-title">
+      <h2 class="panel-title" id="plan-title">Your plan by season</h2>
+      <p class="hint">The cleanest start moves with the seasons. Same appliance, usual time and availability as above.</p>
+      <div class="table-scroll"><table class="data" id="plan-table"></table></div>
+    </section>
+
+    <section class="panel" aria-labelledby="compare-title">
+      <h2 class="panel-title" id="compare-title">How much does timing matter on other grids?</h2>
+      <p class="hint" id="compare-sub"></p>
+      <div class="table-scroll"><table class="data" id="compare-table"></table></div>
+    </section>
+
+    <section class="panel method" id="method" aria-labelledby="method-title">
+      <h2 class="panel-title" id="method-title">How this is calculated</h2>
+      <ol class="steps">
+        <li><strong>Hourly generation.</strong> For each hour of the last 12 months (<span class="m-range"></span>) we take your grid's electricity generation by source from the U.S. Energy Information Administration's <a href="https://www.eia.gov/electricity/gridmonitor/">Hourly Electric Grid Monitor (EIA-930)</a>, using EIA's adjusted values.</li>
+        <li><strong>Emission factors.</strong> Each source gets a CO<sub>2</sub>-equivalent rate from the EPA's <a href="https://www.epa.gov/egrid">eGRID2023</a> for your balancing authority: coal and gas use that region's own plant averages, oil uses the region's rate when it is plausible (otherwise the U.S. rate), other and unknown fuels use the region's overall average, and nuclear, hydro, wind, solar, geothermal and storage count as zero at the smokestack.</li>
+        <li><strong>Hourly intensity.</strong> intensity = Σ(generation × factor) ÷ Σ generation, in grams CO<sub>2</sub>e per kWh.</li>
+        <li><strong>Your run.</strong> kg per run = energy per run × average intensity over the hours the run covers (energy spread evenly, partial hours weighted). We try every allowed start hour, average it over the matching days, and recommend the lowest.</li>
+        <li><strong>Saving.</strong> (kg at your usual time − kg at the recommended time) × runs per week × 52.18 weeks. The track record replays the actual days: on how many of them the fixed recommended time beat your usual time.</li>
+      </ol>
+      <h3>Factors for <span class="m-region"></span></h3>
+      <div class="table-scroll"><table class="data" id="factor-table"></table></div>
+      <p class="hint" id="factor-notes"></p>
+      <h3>Appliance assumptions</h3>
+      <ul class="assumptions" id="assumptions"></ul>
+      <h3>What this does and does not tell you</h3>
+      <ul class="limits">
+        <li><strong>Average, not marginal, emissions.</strong> We report the average intensity of the generation mix. When you move a load, the plant that actually ramps up or down (the <em>marginal</em> unit) can be dirtier or cleaner than the average, so the emissions you actually avoid may be smaller or larger than shown here. (A midday solar surplus that would otherwise be curtailed is the favorable case; shifting onto hours when coal plants are the ones ramping is the unfavorable one.) Marginal-emissions services such as WattTime, and NREL's Cambium data, estimate that effect.</li>
+        <li><strong>Typical history, not a forecast.</strong> The recommendation is a fixed habit based on the last 12 months. Weather changes the best hour day to day; the track record shows how often the fixed habit still won.</li>
+        <li><strong>Generation-based.</strong> Electricity imported from neighboring regions is not traced, which matters most for New York, New England and California.</li>
+        <li><strong>Smokestack (combustion) emissions only.</strong> No lifecycle or upstream emissions such as methane leaks or building solar panels. 2023 factors are applied to 2025–26 generation.</li>
+        <li><strong>Batteries.</strong> Battery and pumped-storage output counts as zero-emission when it is discharged, and charging is not counted. This flatters evening hours in battery-heavy grids such as California, Texas and Arizona.</li>
+        <li><strong>Region and time zone.</strong> Hours are shown in each region's main time zone (<span class="m-tz"></span> for this region). Grid borders don't follow state lines. Your utility bill names your provider.</li>
+        <li><strong>Scale.</strong> One household's saving is small. The point is that it costs nothing, repeats every week, and adds up across many households and devices with timers.</li>
+      </ul>
+      <h3>Data provenance</h3>
+      <ul class="provenance" id="provenance"></ul>
+    </section>
+  </div>
+</main>
+
+<footer class="foot wrap">
+  <p>Data: U.S. EIA Hourly Electric Grid Monitor (EIA-930) and U.S. EPA eGRID2023. Both are U.S. government works in the public domain. Open-source code (MIT): <a href="https://github.com/Bowen1314/cleanest-hour">github.com/Bowen1314/cleanest-hour</a>. Built with an AI coding assistant (Claude); design decisions, testing and write-up reviewed by the author. No tracking, no accounts; everything runs in your browser and works offline once loaded.</p>
+</footer>
+
+<div class="tooltip" id="tooltip" role="presentation" hidden></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
