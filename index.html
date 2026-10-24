@@ -188,7 +188,7 @@
         <li><strong>Emission factors.</strong> Each source gets a CO<sub>2</sub>-equivalent rate from the EPA's <a href="https://www.epa.gov/egrid">eGRID2023</a> for your balancing authority: coal and gas use that region's own plant averages, oil uses the region's rate when it is plausible (otherwise the U.S. rate), other and unknown fuels and battery or pumped-storage output use the region's overall average, and nuclear, hydro, wind, solar and geothermal count as zero at the smokestack.</li>
         <li><strong>Hourly intensity.</strong> intensity = Σ(generation × factor) ÷ Σ generation, in grams CO<sub>2</sub>e per kWh.</li>
         <li><strong>Your run.</strong> kg per run = energy per run × average intensity over the hours the run covers (energy spread evenly, partial hours weighted). We try every allowed start hour, average it over the matching days, and recommend the lowest.</li>
-        <li><strong>Saving.</strong> (kg at your usual time − kg at the recommended time) × runs per week × 52.18 weeks. The track record replays the actual days: on how many of them the fixed recommended time beat your usual time.</li>
+        <li><strong>Saving.</strong> (kg at your usual time − kg at the recommended time) × runs per week × 52.18 weeks. The track record replays the actual days: on how many of them the fixed recommended time beat your usual time. The recommendation is chosen from these same days, so this is a replay of the past year, not a test of how well it forecasts next year.</li>
       </ol>
       <h3>Factors for <span class="m-region"></span></h3>
       <div class="table-scroll"><table class="data" id="factor-table"></table></div>

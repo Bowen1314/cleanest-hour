@@ -6,3 +6,6 @@ __pycache__/
 raw/
 test-results/
 playwright-report/
+demo/raw/
+*.webm
+demo/captions.json

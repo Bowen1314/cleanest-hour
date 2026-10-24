@@ -104,7 +104,8 @@ await shot("2-chart-california.png");
 
 // compare table
 await scrollTo("#compare-title");
-await caption("How much does timing matter elsewhere? Same EV and 7 pm habit on 31 U.S. grids. Solar-heavy grids reward shifting the most.", 7500);
+const nGrids = await page.$$eval("#compare-table tbody tr", (r) => r.length);
+await caption(`How much does timing matter elsewhere? Same EV and 7 pm habit on ${nGrids} U.S. grids. Solar-heavy grids reward shifting the most.`, 7500);
 await shot("3-compare-grids.png");
 
 // seasonal plan + reminders

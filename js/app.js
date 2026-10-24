@@ -11,8 +11,8 @@ const APPLIANCES = [
   },
   {
     id: "washer", label: "Clothes washer", noun: "laundry wash", kwh: 0.4, hours: 1, runs: 4,
-    source: "FTC EnergyGuide labels for current front-loaders show roughly 110–120 kWh a year at 6 loads a week (electric water heater), about 0.4 kWh per load.",
-    url: "https://www.ftc.gov/energy",
+    source: "Median of 301 ENERGY STAR certified U.S. standard-size washers: 120 kWh a year at the DOE test's 295 loads, including electric water heating, about 0.4 kWh per load (data.energystar.gov, queried 2026-10-24).",
+    url: "https://data.energystar.gov/Active-Specifications/ENERGY-STAR-Certified-Residential-Clothes-Washers/bghd-e2wd",
   },
   {
     id: "dryer", label: "Electric dryer", noun: "dryer load", kwh: 2.2, hours: 1, runs: 3,
