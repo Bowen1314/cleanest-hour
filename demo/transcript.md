@@ -16,7 +16,7 @@ Cleanest Hour walkthrough, 2 min 28 s, 1280×800, recorded with Playwright again
 | 1:09 | Now California. "Charge overnight" is common advice, but here the best overnight start emits 2.33 kg, versus 2.30 kg at 7 pm (1% more). On a solar-heavy grid, night isn't cleaner. |
 | 1:19 | Allow any time and the answer flips: Start at 10 am, 1.05 kg per charge versus 2.30 kg at 7 pm (54% less): 326 kg less a year. |
 | 1:27 | The solar dip is obvious on California's grid. The lines show the spread across the middle 80% of days. |
-| 1:34 | How much does timing matter elsewhere? Same EV and 7 pm habit on 31 U.S. grids. Solar-heavy grids reward shifting the most. |
+| 1:35 | How much does timing matter elsewhere? Same EV and 7 pm habit on 31 U.S. grids. Solar-heavy grids reward shifting the most. |
 | 1:43 | Back to New Jersey. The best hour shifts with the seasons, so here's the plan for each one. |
 | 1:51 | Turn it into a habit: download a weekly calendar reminder (.ics), or copy a link that reopens this exact plan. |
 | 1:59 | How this is calculated: generation by source × eGRID factor for each hour, then averaged over the hours your run covers. The factors for PJM are listed. |

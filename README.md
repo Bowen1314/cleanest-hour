@@ -127,10 +127,12 @@ Our 12-month generation-weighted average vs. eGRID2023's annual BA average (comp
 | Santee Cooper (SC) | 811 | 767 | 1.06 | 65% | 25% | 2 |
 | LG&E and KU (LGEE) | 822 | 866 | 0.95 | 76% | 23% | 17 |
 
-25 of 31 regions are within ±25%, as expected given 2023 factors vs. 2025–26 generation. The larger gaps trace to the generation mix, not to the method:
+24 of 31 regions are within ±25%, as expected given 2023 factors vs. 2025–26 generation. The larger gaps trace to the generation mix, not to the method:
 - **LDWP**: coal is 26% of generation in eGRID2023 but 3% in EIA-930 for 2025–26.
 - **BPAT**: EIA-930 reports 0% coal and 4% gas for the BPA balancing area, vs. 4% coal and 13% gas in eGRID2023, whose plant-to-BA assignment differs. BPAT's hourly profile is nearly flat, so the app reports almost no saving there.
-- **AZPS, TEPC, NWMT, PSEI**: less coal in 2025–26 than in eGRID2023's plant assignment for the same BA.
+- **AZPS, TEPC, NWMT**: coal share of generation is 57% → 23%, 65% → 23% and 65% → 45% (eGRID2023 → EIA-930 2025–26).
+- **PSEI**: gas share is 72% in eGRID2023 vs. 39% in EIA-930 2025–26.
+- **DUK** (ratio 1.26, the other direction): coal is 19% of generation in EIA-930 for 2025–26 vs. 8% in eGRID2023.
 
 Hour alignment check: CAISO's absolute solar output peaks at EIA hour-ending 14 (13:00–14:00 PDT) on summer days, and the app's cleanest CAISO hours are midday. A unit test asserts this.
 
