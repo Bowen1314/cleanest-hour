@@ -113,12 +113,12 @@ await page.selectOption("#region", "PJM");
 await ready("PJM");
 await scrollTo("#plan-title");
 await caption("Back to New Jersey. The best hour shifts with the seasons, so here's the plan for each one.", 6500);
+await shot("4-season-plan.png");
 await scrollTo("#result");
 await caption("Turn it into a habit: download a weekly calendar reminder (.ics), or copy a link that reopens this exact plan.", 5500);
 const [dl] = await Promise.all([page.waitForEvent("download"), page.click("#ics")]);
 await dl.path();
 await wait(1500);
-await shot("4-plan-actions.png");
 
 // method
 await scrollTo("#method");
@@ -126,7 +126,7 @@ await caption("How this is calculated: generation by source × eGRID factor for 
 await shot("5-method.png");
 await page.evaluate(() => document.querySelector(".limits").scrollIntoView({ behavior: "smooth", block: "center" }));
 await wait(1200);
-await caption("Limitations, stated plainly: these are average emissions, not marginal ones; it's history, not a forecast; imports aren't traced; and battery discharge counts as zero.", 9000);
+await caption("Limitations, stated plainly: these are average emissions, not marginal ones; it's history, not a forecast; imports aren't traced; and smokestack emissions only, no lifecycle.", 9000);
 await scrollTo("body");
 await caption("Cleanest Hour is open source (MIT) and uses public-domain U.S. government data: github.com/Bowen1314/cleanest-hour", 7000);
 await hideCaption();

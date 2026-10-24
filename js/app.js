@@ -535,10 +535,10 @@ function renderCompare(series) {
   const rows = INDEX.regions.map((reg) => ({ reg, r: reg.ba === state.region ? evaluate(series, o) : evaluateProfile(reg.profileAll, o) }));
   rows.sort((a, b) => b.r.yearlySaveKg - a.r.yearlySaveKg);
   const t = $("compare-table");
-  const head = el("thead", {}, el("tr", {}, ...["Grid", "Cleanest start", `kg/run at ${hourLabel(state.usual)}`, "kg/run at best", "Saving", "kg/year"].map((h) => el("th", { scope: "col", text: h }))));
+  const head = el("thead", {}, el("tr", {}, ...["Grid", "Cleanest start", `kg per run: ${hourLabel(state.usual)} → best`, "Saving", "kg/year"].map((h) => el("th", { scope: "col", text: h }))));
   const body = el("tbody");
   for (const { reg, r } of rows) {
-    const tr = el("tr", {}, el("td", { text: `${reg.name} (${reg.ba})` }), el("td", { text: `${hourLabel(r.best)} ${reg.tzLabel.split(" ")[0]}` }), el("td", { text: fmtKg(r.usualKg) }), el("td", { text: fmtKg(r.bestKg) }), el("td", { text: pct(r.savePct) }), el("td", { text: fmtYr(r.yearlySaveKg) }));
+    const tr = el("tr", {}, el("td", { text: `${reg.name} (${reg.ba})` }), el("td", { text: `${hourLabel(r.best)} ${reg.tzLabel.split(" ")[0].replace("Eastern", "ET").replace("Central", "CT").replace("Mountain", "MT").replace("Pacific", "PT").replace("Arizona", "AZ")}` }), el("td", { text: `${fmtKg(r.usualKg)} → ${fmtKg(r.bestKg)}` }), el("td", { text: pct(r.savePct) }), el("td", { text: fmtYr(r.yearlySaveKg) }));
     if (reg.ba === state.region) tr.className = "current";
     body.append(tr);
   }
