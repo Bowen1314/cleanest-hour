@@ -1,6 +1,6 @@
 // Cleanest Hour service worker: precache the app shell and every region file so the
 // tool keeps working offline after the first visit.
-const VERSION = "ch-v1";
+const VERSION = "ch-v2";
 const SHELL = ["./", "index.html", "css/style.css", "js/app.js", "js/calc.js", "icon.svg", "manifest.webmanifest", "data/index.json"];
 
 self.addEventListener("install", (event) => {

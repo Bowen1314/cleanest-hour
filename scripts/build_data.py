@@ -19,8 +19,8 @@ Method (also explained in the app's "How this is calculated" panel):
   and rate_f is an EPA eGRID2023 CO2-equivalent output emission rate:
     coal, gas  -> the balancing authority's own eGRID coal / gas rate
     oil        -> BA oil rate if 1000-3500 lb/MWh, else the U.S. oil rate
-    other/unknown fuel -> the BA's eGRID annual average (total) output rate
-    nuclear, hydro, wind, solar, geothermal, storage discharge -> 0 (no combustion)
+    other/unknown fuel, storage discharge -> the BA's eGRID annual average (total) output rate
+    nuclear, hydro, wind, solar, geothermal -> 0 (no combustion)
 
 Usage:
   python3 -I scripts/build_data.py --eia RAW/EIA930_BALANCE_*.csv --egrid RAW/egrid2023_data_rev2.xlsx \
@@ -97,7 +97,7 @@ FUEL_COLUMNS = {
     "other": ["other fuel sources", "unknown fuel sources"],
 }
 FUELS = list(FUEL_COLUMNS)  # order used in the mix arrays
-ZERO_COMBUSTION = {"nuclear", "hydro", "wind", "solar", "geothermal", "storage"}
+ZERO_COMBUSTION = {"nuclear", "hydro", "wind", "solar", "geothermal"}
 OIL_BAND = (1000.0, 3500.0)  # lb/MWh; outside this the BA oil rate is treated as unreliable
 SEASONS = {12: "winter", 1: "winter", 2: "winter", 3: "spring", 4: "spring", 5: "spring",
            6: "summer", 7: "summer", 8: "summer", 9: "fall", 10: "fall", 11: "fall"}
@@ -180,6 +180,9 @@ def factors_for(ba, egrid, us):
         oil = us["oil"]
     lb["oil"] = float(oil)
     lb["other"] = float(e["total"])
+    # Storage discharge is grid energy stored earlier. Some BAs (e.g. CISO) report batteries inside
+    # "Other", so for consistency storage also gets the BA's annual average rate (not zero).
+    lb["storage"] = float(e["total"])
     for f in ZERO_COMBUSTION:
         lb[f] = 0.0
     g = {f: round(v * LB_PER_MWH_TO_G_PER_KWH, 1) for f, v in lb.items()}
